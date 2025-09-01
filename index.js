@@ -17,7 +17,9 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ?
     'https://fitzonecom.netlify.app',
     'https://luxury-fashion.netlify.app',
     'https://thobe-plus.netlify.app',
-    'https://thobeplus.netlify.app'
+    'https://thobeplus.netlify.app',
+    'http://thobeplus.com',
+    'https://thobeplus.com'
   ];
 
 app.use(cors({
