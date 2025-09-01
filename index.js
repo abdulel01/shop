@@ -22,22 +22,34 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ?
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    console.log('🌐 CORS request from origin:', origin);
     
-    // Allow any netlify.app domain
-    if (origin && origin.includes('.netlify.app')) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) {
+      console.log('✅ Allowing request with no origin');
       return callback(null, true);
     }
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+    // Allow any netlify.app domain
+    if (origin && origin.includes('.netlify.app')) {
+      console.log('✅ Allowing netlify.app domain:', origin);
+      return callback(null, true);
     }
+    
+    // Check against allowed origins list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log('✅ Allowing whitelisted origin:', origin);
+      return callback(null, true);
+    }
+    
+    // Log blocked requests for debugging
+    console.log('❌ CORS blocked origin:', origin);
+    console.log('📋 Allowed origins:', allowedOrigins);
+    return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(express.json());
 
